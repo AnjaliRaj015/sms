@@ -4,7 +4,7 @@ USE sms;
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     full_name VARCHAR(255),
-    username VARCHAR(50) NOT NULL,
+    username VARCHAR(50) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     role VARCHAR(20) NOT NULL CHECK (role IN ('customer', 'staff', 'admin')),
     email VARCHAR(100),
@@ -24,7 +24,7 @@ CREATE TABLE services (
 
 CREATE TABLE customers (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT,
+    user_id INT UNIQUE,
     username VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL,
     full_name VARCHAR(255),
@@ -37,7 +37,7 @@ CREATE TABLE customers (
 
 CREATE TABLE staffs (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT,
+    user_id INT UNIQUE,
     username VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL,
     full_name VARCHAR(255),
@@ -58,7 +58,7 @@ CREATE TABLE appointments (
     status VARCHAR(20) NOT NULL CHECK (status IN ('pending','scheduled', 'completed', 'canceled')),
     FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE SET NULL,
     FOREIGN KEY (service_id) REFERENCES services(id) ON DELETE SET NULL,
-    FOREIGN KEY (staff_id) REFERENCES users(id) ON DELETE SET NULL,
+    FOREIGN KEY (staff_id) REFERENCES staffs(id) ON DELETE SET NULL,
     INDEX (customer_id),
     INDEX (service_id),
     INDEX (staff_id)

@@ -2,6 +2,7 @@ package main.java.com.sms.dao;
 
 import main.java.com.sms.model.QuoteRequest;
 import main.java.com.sms.db.database;
+import main.java.com.sms.model.customer;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -64,8 +65,8 @@ public class QuoteRequestDAO {
             while (resultSet.next()) {
                 QuoteRequest quoteRequest = new QuoteRequest();
                 quoteRequest.setId(resultSet.getInt("quote_id"));
-                quoteRequest.setCustomerId(resultSet.getInt("customer_id")); // Ensure this matches
-                quoteRequest.setServiceId(resultSet.getInt("service_id")); // Ensure this matches
+                quoteRequest.setCustomerId(resultSet.getInt("customer_id"));
+                quoteRequest.setServiceId(resultSet.getInt("service_id")); 
                 quoteRequest.setStatus(resultSet.getString("status"));
                 quoteRequest.setServiceName(resultSet.getString("service_name"));
                 quoteRequest.setCustomerName(resultSet.getString("customer_name"));
@@ -95,14 +96,19 @@ public class QuoteRequestDAO {
 
     public void addQuoteRequest(QuoteRequest quoteRequest) {
         try {
-            String query = "INSERT INTO quote_requests (customer_id, service_id, status) VALUES (?, ?, ?)";
+            String query = "INSERT INTO quote_requests (customer_id, service_id, status, service_name, customer_name, customer_address, customer_phone) VALUES (?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, quoteRequest.getCustomerId());
             statement.setInt(2, quoteRequest.getServiceId());
             statement.setString(3, quoteRequest.getStatus());
+            statement.setString(4, quoteRequest.getServiceName()); // New field
+            statement.setString(5, quoteRequest.getCustomerName()); // New field
+            statement.setString(6, quoteRequest.getCustomerAddress()); // New field
+            statement.setString(7, quoteRequest.getCustomerPhone()); // New field
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+    
 }

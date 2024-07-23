@@ -20,8 +20,10 @@ public class loginform extends JFrame {
     private JLabel forgotPasswordLabel;
     private JLabel signUpLabel;
     private JLabel logoLabel;
+    private String role;
 
-    public loginform() {
+    public loginform(String role) {
+        this.role = role;
         setTitle("Login");
         setSize(800, 400); // Adjusted size to accommodate new design
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -55,7 +57,6 @@ public class loginform extends JFrame {
         welcomeText.setFont(new Font("Arial", Font.PLAIN, 14));
         welcomeText.setForeground(Color.WHITE);
         welcomeText.setAlignmentX(Component.CENTER_ALIGNMENT);
-
 
         leftPanel.add(logoLabel);
         leftPanel.add(Box.createVerticalStrut(30));
@@ -143,14 +144,23 @@ public class loginform extends JFrame {
         gbc.anchor = GridBagConstraints.CENTER;
         rightPanel.add(loginButton, gbc);
 
-        signUpLabel = new JLabel("Don't have an account? Sign up");
-        signUpLabel.setFont(new Font("Arial", Font.PLAIN, 12));
-        signUpLabel.setForeground(Color.WHITE);
-        gbc.gridx = 0;
-        gbc.gridy = 5;
-        gbc.gridwidth = 2;
-        gbc.anchor = GridBagConstraints.CENTER;
-        rightPanel.add(signUpLabel, gbc);
+        if ("customer".equals(role)) {
+            signUpLabel = new JLabel("Don't have an account? Sign up");
+            signUpLabel.setFont(new Font("Arial", Font.PLAIN, 12));
+            signUpLabel.setForeground(Color.WHITE);
+            gbc.gridx = 0;
+            gbc.gridy = 5;
+            gbc.gridwidth = 2;
+            gbc.anchor = GridBagConstraints.CENTER;
+            rightPanel.add(signUpLabel, gbc);
+
+            signUpLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+                public void mouseClicked(java.awt.event.MouseEvent evt) {
+                    new registerform();
+                    dispose();
+                }
+            });
+        }
 
         // Split pane to divide left and right panels
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPanel, rightPanel);
@@ -177,9 +187,5 @@ public class loginform extends JFrame {
         });
 
         setVisible(true);
-    }
-
-    public static void main(String[] args) {
-        new loginform();
     }
 }

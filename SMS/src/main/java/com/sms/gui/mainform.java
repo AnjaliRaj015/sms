@@ -1,6 +1,7 @@
 package main.java.com.sms.gui;
 
 import main.java.com.sms.dao.servicedao;
+import main.java.com.sms.Main;
 import main.java.com.sms.dao.QuoteRequestDAO;
 import main.java.com.sms.dao.appointmentdao;
 import main.java.com.sms.dao.userdao;
@@ -37,6 +38,7 @@ public class mainform extends JFrame {
         }
 
         add(tabbedPane);
+        addLogoutButton(); // Add the logout button
         setVisible(true);
     }
 
@@ -87,7 +89,9 @@ loadAppointmentsButton.addActionListener(new ActionListener() {
     @Override
     public void actionPerformed(ActionEvent e) {
         appointmentdao appointmentDAO = new appointmentdao();
-        List<appointment> appointments = appointmentDAO.getAppointmentsByStaffId(user.getId()); // Assuming `getAppointmentsByStaffId` method exists
+        userdao userDAO = new userdao();
+        int staffId = userDAO.getStaffIdByUserId(user.getId());
+        List<appointment> appointments = appointmentDAO.getAppointmentsByStaffId(staffId); // Assuming `getAppointmentsByStaffId` method exists
         appointmentTextArea.setText("");
         for (appointment appointment : appointments) {
             appointmentTextArea.append("Service ID: " + appointment.getServiceId() + 
@@ -188,7 +192,9 @@ appointmentPanel.add(appointmentButtonsPanel, BorderLayout.SOUTH);
                     appointment newAppointment = new appointment();
                     newAppointment.setServiceId(selectedRequest.getServiceId());
                     newAppointment.setCustomerId(selectedRequest.getCustomerId());
-                    newAppointment.setStaffId(user.getId()); // Assuming `user` is the staff taking the request
+                    userdao userDAO = new userdao();
+                    int staffId = userDAO.getStaffIdByUserId(user.getId());
+                    newAppointment.setStaffId(staffId); // Assuming `user` is the staff taking the request
                     newAppointment.setDate(appointmentDate);
                     newAppointment.setTime("09:00:00"); // Set a default time or extend UI for time input
                     newAppointment.setStatus("scheduled");
@@ -245,29 +251,44 @@ appointmentPanel.add(appointmentButtonsPanel, BorderLayout.SOUTH);
         servicePanel.add(new JScrollPane(serviceTextArea), BorderLayout.CENTER);
         servicePanel.add(loadServicesButton, BorderLayout.SOUTH);
 
-        // Request a Quote
-        JPanel quotePanel = new JPanel(new BorderLayout());
-        quotePanel.add(new JLabel("Request a Quote"), BorderLayout.NORTH);
-        JComboBox<service> serviceComboBox = new JComboBox<>();
-        List<service> services = servicedao.getAllServices();
-        for (service service : services) {
-            serviceComboBox.addItem(service);
-        }
-        JButton requestQuoteButton = new JButton("Request Quote");
-        requestQuoteButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                service selectedService = (service) serviceComboBox.getSelectedItem();
-                if (selectedService != null) {
-                    QuoteRequest quoteRequest = new QuoteRequest();
-                    quoteRequest.setCustomerId(user.getId());
-                    quoteRequest.setServiceId(selectedService.getId());
-                    quoteRequest.setStatus("Pending");
-                    new QuoteRequestDAO().addQuoteRequest(quoteRequest);
-                    JOptionPane.showMessageDialog(mainform.this, "Quote requested successfully!");
-                }
+      // Request a Quote
+JPanel quotePanel = new JPanel(new BorderLayout());
+quotePanel.add(new JLabel("Request a Quote"), BorderLayout.NORTH);
+JComboBox<service> serviceComboBox = new JComboBox<>();
+List<service> services = servicedao.getAllServices();
+for (service service : services) {
+    serviceComboBox.addItem(service);
+}
+JButton requestQuoteButton = new JButton("Request Quote");
+requestQuoteButton.addActionListener(new ActionListener() {
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        service selectedService = (service) serviceComboBox.getSelectedItem();
+        
+        if (selectedService != null) {
+            userdao userDAO = new userdao();
+            int customerId = userDAO.getCustomerIdByUserId(user.getId());
+            if (customerId != -1) {
+                customer customerDetails = userDAO.getCustomerById(customerId);  // Fetch customer details
+                
+                QuoteRequest quoteRequest = new QuoteRequest();
+                quoteRequest.setCustomerId(customerId);  // Use the correct customer ID
+                quoteRequest.setServiceId(selectedService.getId());
+                quoteRequest.setServiceName(selectedService.getName());
+                quoteRequest.setCustomerName(customerDetails.getName());
+                quoteRequest.setCustomerAddress(customerDetails.getAddress());
+                quoteRequest.setCustomerPhone(customerDetails.getPhone());
+                quoteRequest.setStatus("Pending");
+                
+                new QuoteRequestDAO().addQuoteRequest(quoteRequest);
+                JOptionPane.showMessageDialog(mainform.this, "Quote requested successfully!");
+            } else {
+                JOptionPane.showMessageDialog(mainform.this, "Customer ID not found.");
             }
-        });
+        }
+    }
+});
+
         quotePanel.add(serviceComboBox, BorderLayout.CENTER);
         quotePanel.add(requestQuoteButton, BorderLayout.SOUTH);
 
@@ -280,7 +301,9 @@ loadAppointmentsButton.addActionListener(new ActionListener() {
     @Override
     public void actionPerformed(ActionEvent e) {
         appointmentdao appointmentDAO = new appointmentdao();
-        List<appointment> appointments = appointmentDAO.getAppointmentsByCustomerId(user.getId());
+        userdao userDAO = new userdao();
+        int customerId = userDAO.getCustomerIdByUserId(user.getId());
+        List<appointment> appointments = appointmentDAO.getAppointmentsByCustomerId(customerId);
         appointmentTextArea.setText("");
         for (appointment appointment : appointments) {
             appointmentTextArea.append("Service ID: " + appointment.getServiceId() + 
@@ -303,7 +326,9 @@ appointmentPanel.add(loadAppointmentsButton, BorderLayout.SOUTH);
             @Override
             public void actionPerformed(ActionEvent e) {
                 QuoteRequestDAO quoteRequestDAO = new QuoteRequestDAO();
-                List<QuoteRequest> quoteRequests = quoteRequestDAO.getQuoteRequestsByCustomerId(user.getId());
+                userdao userDAO = new userdao();
+                int customerId = userDAO.getCustomerIdByUserId(user.getId());
+                List<QuoteRequest> quoteRequests = quoteRequestDAO.getQuoteRequestsByCustomerId(customerId);
                 quoteRequestTextArea.setText("");
                 for (QuoteRequest quoteRequest : quoteRequests) {
                     quoteRequestTextArea.append("Service: " + quoteRequest.getServiceId() + 
@@ -320,7 +345,17 @@ appointmentPanel.add(loadAppointmentsButton, BorderLayout.SOUTH);
         tabbedPane.addTab("Pending Requests", quoteRequestPanel);
 
     }
-
+    private void addLogoutButton() {
+        JButton logoutButton = new JButton("Logout");
+        logoutButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+                Main.main(new String[0]); // Assuming LoginForm is your login form class
+            }
+        });
+        add(logoutButton, BorderLayout.SOUTH);
+    }
     private customer getSelectedCustomer() {
         // Implement this method to return the selected customer from the customer list
         // For now, return null to indicate this method needs implementation

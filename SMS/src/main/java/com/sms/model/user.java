@@ -1,20 +1,29 @@
 package main.java.com.sms.model;
 
 public class user {
-    protected int id;
+    protected static int id;
+    protected String full_name;
     protected String username;
     protected String password;
     protected String role;
     protected String email; 
     protected String phone;
+    protected String address;
 
     // Getters and Setters
-    public int getId() {
+    public static int getId() {
         return id;
     }
 
     public void setId(int id) {
-        this.id = id;
+        user.id = id;
+    }
+    public String getName() {
+        return full_name;
+    }
+
+    public void setName(String full_name) {
+        this.full_name = full_name;
     }
 
     public String getUsername() {
@@ -55,5 +64,16 @@ public class user {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+    @Override
+    public String toString() {
+        return full_name;
     }
 }
