@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 
 public class loginform extends JFrame {
     private JTextField usernameField;
@@ -178,7 +179,12 @@ public class loginform extends JFrame {
                 userdao userDAO = new userdao();
                 user user = userDAO.getUser(username, password);
                 if (user != null) {
-                    new mainform(user);
+                    try {
+                        new mainform(user);
+                    } catch (SQLException e1) {
+                        // TODO Auto-generated catch block
+                        e1.printStackTrace();
+                    }
                     dispose();
                 } else {
                     JOptionPane.showMessageDialog(null, "Invalid username or password");

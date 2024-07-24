@@ -78,49 +78,6 @@ public class userdao {
             e.printStackTrace();
         }
     }
-    
-    public int getCustomerIdByUserId(int userId) {
-        int customerId = -1;
-        String query = "SELECT id FROM customers WHERE user_id = ?";
-        try (Connection conn = database.connect(); PreparedStatement pstmt = conn.prepareStatement(query)) {
-            pstmt.setInt(1, userId);
-            ResultSet rs = pstmt.executeQuery();
-            if (rs.next()) {
-                customerId = rs.getInt("id");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return customerId;
-    }
-    public int getStaffIdByUserId(int userId) {
-        int staffId = -1;
-        String query = "SELECT id FROM staffs WHERE user_id = ?";
-        try (Connection conn = database.connect(); PreparedStatement pstmt = conn.prepareStatement(query)) {
-            pstmt.setInt(1, userId);
-            ResultSet rs = pstmt.executeQuery();
-            if (rs.next()) {
-                staffId = rs.getInt("id");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return staffId;
-    }
-
-    public static void updateCustomer(customer customer) {
-        String sql = "UPDATE users SET email = ?, phone = ?, address = ? WHERE id = ?";
-        try (Connection conn = database.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, customer.getEmail());
-            pstmt.setString(2, customer.getPhone());
-            pstmt.setString(3, customer.getAddress());
-            pstmt.setInt(4, customer.getId());
-            pstmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
     public static List<customer> getCustomers() {
         List<customer> customers = new ArrayList<>();
         String query = "SELECT * FROM customers";
@@ -143,6 +100,33 @@ public class userdao {
         }
         return customers;
     }
+    public static void updateCustomer(customer customer) {
+        String sql = "UPDATE users SET email = ?, phone = ?, address = ? WHERE id = ?";
+        try (Connection conn = database.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, customer.getEmail());
+            pstmt.setString(2, customer.getPhone());
+            pstmt.setString(3, customer.getAddress());
+            pstmt.setInt(4, customer.getId());
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public int getCustomerIdByUserId(int userId) {
+        int customerId = -1;
+        String query = "SELECT id FROM customers WHERE user_id = ?";
+        try (Connection conn = database.connect(); PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.setInt(1, userId);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                customerId = rs.getInt("id");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return customerId;
+    }
     public static customer getCustomerById(int customerId) {
         customer customer = null;
         String query = "SELECT * FROM customers WHERE id = ?";
@@ -157,7 +141,7 @@ public class userdao {
                 customer = new customer(
                     resultSet.getString("username"),
                     resultSet.getString("password"),
-                    resultSet.getString("full_name"),  // Assuming full_name corresponds to 'name'
+                    resultSet.getString("full_name"),  
                     resultSet.getString("email"),
                     resultSet.getString("phone"),
                     resultSet.getString("address")
@@ -170,26 +154,41 @@ public class userdao {
         
         return customer;
     }
+    public static List<staff> getStaff() {
+        List<staff> staffs = new ArrayList<>();
+        String query = "SELECT * FROM staffs";
         
-    public static List<staff> getEmployees() {
-        Connection connection = database.connect();
-        String query = "SELECT * FROM users WHERE role = 'staff'";
-        List<staff> employees = new ArrayList<>();
-        try {
-            PreparedStatement ps = connection.prepareStatement(query);
-            ResultSet rs = ps.executeQuery();
+        try (Connection conn = database.connect(); PreparedStatement ps = conn.prepareStatement(query); ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
-                staff employee = new staff();
-                employee.setId(rs.getInt("id"));
-                employee.setUsername(rs.getString("username"));
-                employee.setPassword(rs.getString("password"));
-                employee.setRole(rs.getString("role"));
-                employee.setPosition(rs.getString("position"));
-                employees.add(employee);
+                staff staff = new staff(
+                    rs.getString("username"),
+                    rs.getString("password"),
+                    rs.getString("full_name"),  
+                    rs.getString("email"),
+                    rs.getString("phone"),
+                    rs.getString("address")
+                );
+                staff.setId(rs.getInt("id"));
+                staffs.add(staff);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return employees;
+        return staffs;
     }
+    public int getStaffIdByUserId(int userId) {
+        int staffId = -1;
+        String query = "SELECT id FROM staffs WHERE user_id = ?";
+        try (Connection conn = database.connect(); PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.setInt(1, userId);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                staffId = rs.getInt("id");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return staffId;
+    }
+
 }

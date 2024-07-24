@@ -10,6 +10,33 @@ import java.util.List;
 public class QuoteRequestDAO {
     private Connection connection;
 
+    public void addQuoteRequest(QuoteRequest quoteRequest) {
+        try {
+            String query = "INSERT INTO quote_requests (customer_id, service_id, status, service_name, customer_name, customer_address, customer_phone) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setInt(1, quoteRequest.getCustomerId());
+            statement.setInt(2, quoteRequest.getServiceId());
+            statement.setString(3, quoteRequest.getStatus());
+            statement.setString(4, quoteRequest.getServiceName()); // New field
+            statement.setString(5, quoteRequest.getCustomerName()); // New field
+            statement.setString(6, quoteRequest.getCustomerAddress()); // New field
+            statement.setString(7, quoteRequest.getCustomerPhone()); // New field
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    public void updateQuoteRequest(QuoteRequest quoteRequest) {
+        try {
+            String query = "UPDATE quote_requests SET status = ? WHERE id = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, quoteRequest.getStatus());
+            statement.setInt(2, quoteRequest.getId());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
     public QuoteRequestDAO() {
         try {
             connection = database.getConnection();
@@ -82,33 +109,6 @@ public class QuoteRequestDAO {
     }
     
 
-    public void updateQuoteRequest(QuoteRequest quoteRequest) {
-        try {
-            String query = "UPDATE quote_requests SET status = ? WHERE id = ?";
-            PreparedStatement statement = connection.prepareStatement(query);
-            statement.setString(1, quoteRequest.getStatus());
-            statement.setInt(2, quoteRequest.getId());
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
 
-    public void addQuoteRequest(QuoteRequest quoteRequest) {
-        try {
-            String query = "INSERT INTO quote_requests (customer_id, service_id, status, service_name, customer_name, customer_address, customer_phone) VALUES (?, ?, ?, ?, ?, ?, ?)";
-            PreparedStatement statement = connection.prepareStatement(query);
-            statement.setInt(1, quoteRequest.getCustomerId());
-            statement.setInt(2, quoteRequest.getServiceId());
-            statement.setString(3, quoteRequest.getStatus());
-            statement.setString(4, quoteRequest.getServiceName()); // New field
-            statement.setString(5, quoteRequest.getCustomerName()); // New field
-            statement.setString(6, quoteRequest.getCustomerAddress()); // New field
-            statement.setString(7, quoteRequest.getCustomerPhone()); // New field
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
     
 }

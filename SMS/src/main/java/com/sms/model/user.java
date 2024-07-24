@@ -15,7 +15,7 @@ public class user {
         return id;
     }
 
-    public void setId(int id) {
+    public static void setId(int id) {
         user.id = id;
     }
     public String getName() {
@@ -74,6 +74,6 @@ public class user {
     }
     @Override
     public String toString() {
-        return full_name;
+        return this.full_name;
     }
 }
