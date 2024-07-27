@@ -99,7 +99,7 @@ Keeps a record of the quote requets.
     - Run the SQL scripts located in the `resources` folder to create tables and insert initial data.
 
 3. **Configure the database connection:**
-    - Update the database connection settings in `src/main/java/com/config/DatabaseConfig.java`.
+    - Update the database connection settings in `src/main/java/com/main/db/database.java`.
 
 4. **Build the project:**
     ```bash
