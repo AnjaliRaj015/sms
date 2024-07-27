@@ -7,7 +7,7 @@ import com.main.db.database;
 import com.main.model.serviceHistory;
 
 public class servicehistorydao {
-
+    // add service history
     public void addServiceHistory(serviceHistory app) {
         String sql = "INSERT INTO service_history (customer_id, service_name, date, cost) VALUES (?, ?, ?, ?)";
 
@@ -22,6 +22,7 @@ public class servicehistorydao {
         }
     }
 
+    // add service histroy by customer id
     public static List<serviceHistory> getServiceHistoryByCustomerId(int customerId) {
         Connection connection = database.connect();
         List<serviceHistory> histories = new ArrayList<>();

@@ -12,6 +12,7 @@ import java.util.List;
 public class QuoteRequestDAO {
     private Connection connection;
 
+    // add quote request
     public void addQuoteRequest(QuoteRequest quoteRequest) {
         try {
             String query = "INSERT INTO quote_requests (customer_id, service_id, status, service_name, customer_name, customer_address, customer_phone) VALUES (?, ?, ?, ?, ?, ?, ?)";
@@ -29,6 +30,7 @@ public class QuoteRequestDAO {
         }
     }
 
+    // update quote request
     public void updateQuoteRequest(QuoteRequest quoteRequest) {
         try {
             String query = "UPDATE quote_requests SET status = ? WHERE id = ?";
@@ -41,7 +43,6 @@ public class QuoteRequestDAO {
         }
     }
 
-
     public QuoteRequestDAO() {
         try {
             connection = database.getConnection();
@@ -50,6 +51,7 @@ public class QuoteRequestDAO {
         }
     }
 
+    // get quote request by customer id
     public List<QuoteRequest> getQuoteRequestsByCustomerId(int customerId) {
         List<QuoteRequest> quoteRequests = new ArrayList<>();
         try {
@@ -74,8 +76,7 @@ public class QuoteRequestDAO {
         return quoteRequests;
     }
 
-
-
+    // get pending quote requests
     public List<QuoteRequest> getPendingQuoteRequests() {
         List<QuoteRequest> quoteRequests = new ArrayList<>();
         try {

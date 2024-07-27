@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class appointmentdao {
-
+    // get all appointments
     public static List<appointment> getAllAppointments() {
         Connection connection = database.connect();
         String query = "SELECT * FROM appointments";
@@ -37,6 +37,7 @@ public class appointmentdao {
         }
         return appointments;
     }
+
     // Add method to add a new appointment
     public void addAppointment(appointment app) {
         String sql = "INSERT INTO appointments (service_id, customer_id, staff_id, date, time, status) VALUES (?, ?, ?, ?, ?, ?)";
@@ -52,6 +53,7 @@ public class appointmentdao {
             e.printStackTrace();
         }
     }
+
     // Add method to update appointment
     public void updateAppointment(appointment app) {
         String sql = "UPDATE appointments SET status = ?, date = ?, reschedule_count = ? WHERE id = ?";
@@ -65,12 +67,14 @@ public class appointmentdao {
             e.printStackTrace();
         }
     }
+
+    // get service name by id
     public String getServiceNameById(int serviceId) {
         String serviceName = null;
         String query = "SELECT name FROM services WHERE id = ?";
-        
-        try (Connection conn = database.getConnection(); 
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+        try (Connection conn = database.getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setInt(1, serviceId);
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
@@ -81,12 +85,14 @@ public class appointmentdao {
         }
         return serviceName;
     }
+
+    // get appointments by id
     public appointment getAppointmentById(int appointmentId) {
         appointment appointment = null;
         String query = "SELECT * FROM appointments WHERE id = ?";
 
         try (Connection conn = database.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
+                PreparedStatement pstmt = conn.prepareStatement(query)) {
 
             pstmt.setInt(1, appointmentId);
             ResultSet rs = pstmt.executeQuery();
@@ -107,6 +113,8 @@ public class appointmentdao {
 
         return appointment;
     }
+
+    // get appointment by staff id
     public List<appointment> getAppointmentsByStaffId(int staffId) {
         Connection connection = database.connect();
         String query = "SELECT * FROM appointments WHERE staff_id = ?";
@@ -132,6 +140,7 @@ public class appointmentdao {
         return appointments;
     }
 
+    // get appointment by customer id
     public static List<appointment> getAppointmentsByCustomerId(int customerId) {
         Connection connection = database.connect();
         String query = "SELECT a.*, s.full_name, s.phone FROM appointments a JOIN staffs s ON a.staff_id = s.id WHERE a.customer_id = ?";
@@ -151,7 +160,7 @@ public class appointmentdao {
                 appointment.setStatus(rs.getString("a.status"));
                 appointment.setStaffName(rs.getString("s.full_name"));
                 appointment.setStaffPhone(rs.getString("s.phone"));
-                
+
                 appointments.add(appointment);
             }
         } catch (SQLException e) {
@@ -159,6 +168,8 @@ public class appointmentdao {
         }
         return appointments;
     }
+
+    // assign staff to quote request
     public void assignEmployeeToAppointment(int appointmentId, int employeeId) {
         String sql = "UPDATE appointments SET staff_id = ? WHERE id = ?";
         try (Connection conn = database.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -169,5 +180,5 @@ public class appointmentdao {
             e.printStackTrace();
         }
     }
-    
+
 }

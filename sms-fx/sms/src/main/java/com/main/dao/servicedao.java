@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class servicedao {
+    // get all services
     public static List<service> getAllServices() {
         Connection connection = database.connect();
         String query = "SELECT * FROM services";
@@ -32,9 +33,10 @@ public class servicedao {
             e.printStackTrace();
         }
         return services;
-        
+
     }
 
+    // add a new service
     public static void addService(service service) {
         String sql = "INSERT INTO services (name, description, cost, estimated_duration) VALUES (?, ?, ?, ?)";
         try (Connection conn = database.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -47,6 +49,8 @@ public class servicedao {
             e.printStackTrace();
         }
     }
+
+    // get service by name
     public static List<service> getServiceByName(String serviceName) {
         Connection connection = database.connect();
         String sql = "SELECT * FROM services WHERE name = ?";
@@ -66,18 +70,20 @@ public class servicedao {
             e.printStackTrace();
         }
         return null;
-        
+
     }
+
+    // get service by id
     public service getServiceById(int serviceId) {
         service service = null;
         String query = "SELECT * FROM services WHERE id = ?";
-        
+
         try (Connection connection = database.connect();
-             PreparedStatement statement = connection.prepareStatement(query)) {
-             
+                PreparedStatement statement = connection.prepareStatement(query)) {
+
             statement.setInt(1, serviceId);
             ResultSet resultSet = statement.executeQuery();
-            
+
             if (resultSet.next()) {
                 service = new service();
                 service.setId(resultSet.getInt("id"));
@@ -88,8 +94,8 @@ public class servicedao {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
+
         return service;
     }
-    
+
 }

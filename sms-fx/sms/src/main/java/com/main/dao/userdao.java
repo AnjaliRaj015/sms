@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class userdao {
-    
+    // get user
     public user getUser(String username, String password) {
         Connection connection = database.connect();
         String query = "SELECT * FROM users WHERE username = ? AND password = ?";
@@ -29,7 +29,7 @@ public class userdao {
                 user.setPassword(rs.getString("password"));
                 user.setRole(rs.getString("role"));
                 System.out.println("User logged in with ID: " + user.getId());
-                session.setLoggedInUser(user); 
+                session.setLoggedInUser(user);
                 return user;
             }
         } catch (SQLException e) {
@@ -38,9 +38,11 @@ public class userdao {
         return null;
     }
 
+    // add user
     public static void addUser(user user) {
         String sql = "INSERT INTO users (full_name, username, password, role, email, phone, address) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        try (Connection conn = database.connect(); PreparedStatement pstmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
+        try (Connection conn = database.connect();
+                PreparedStatement pstmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
             pstmt.setString(1, user.getName());
             pstmt.setString(2, user.getUsername());
             pstmt.setString(3, user.getPassword());
@@ -59,10 +61,11 @@ public class userdao {
         }
     }
 
+    // add customer
     public static void addCustomer(customer customer) {
         // First, add the user
         addUser(customer);
-        
+
         // Then, add the customer
         String sql = "INSERT INTO customers (user_id, username, password, full_name, email, phone, address) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = database.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -79,20 +82,23 @@ public class userdao {
             e.printStackTrace();
         }
     }
+
+    // get customer
     public static List<customer> getCustomers() {
         List<customer> customers = new ArrayList<>();
         String query = "SELECT * FROM customers";
-        
-        try (Connection conn = database.connect(); PreparedStatement ps = conn.prepareStatement(query); ResultSet rs = ps.executeQuery()) {
+
+        try (Connection conn = database.connect();
+                PreparedStatement ps = conn.prepareStatement(query);
+                ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 customer customer = new customer(
-                    rs.getString("username"),
-                    rs.getString("password"),
-                    rs.getString("full_name"),  // Assuming full_name corresponds to 'name'
-                    rs.getString("email"),
-                    rs.getString("phone"),
-                    rs.getString("address")
-                );
+                        rs.getString("username"),
+                        rs.getString("password"),
+                        rs.getString("full_name"), // Assuming full_name corresponds to 'name'
+                        rs.getString("email"),
+                        rs.getString("phone"),
+                        rs.getString("address"));
                 customer.setId(rs.getInt("id"));
                 customers.add(customer);
             }
@@ -101,6 +107,8 @@ public class userdao {
         }
         return customers;
     }
+
+    // update customer
     public static void updateCustomer(customer customer) {
         String sql = "UPDATE users SET email = ?, phone = ?, address = ? WHERE id = ?";
         try (Connection conn = database.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -114,6 +122,7 @@ public class userdao {
         }
     }
 
+    // get customer by userid
     public int getCustomerIdByUserId(int userId) {
         int customerId = -1;
         String query = "SELECT id FROM customers WHERE user_id = ?";
@@ -128,47 +137,51 @@ public class userdao {
         }
         return customerId;
     }
+
+    // get customer by id
     public static customer getCustomerById(int customerId) {
         customer customer = null;
         String query = "SELECT * FROM customers WHERE id = ?";
-        
+
         try (Connection connection = database.connect();
-             PreparedStatement statement = connection.prepareStatement(query)) {
-             
+                PreparedStatement statement = connection.prepareStatement(query)) {
+
             statement.setInt(1, customerId);
             ResultSet resultSet = statement.executeQuery();
-            
+
             if (resultSet.next()) {
                 customer = new customer(
-                    resultSet.getString("username"),
-                    resultSet.getString("password"),
-                    resultSet.getString("full_name"),  
-                    resultSet.getString("email"),
-                    resultSet.getString("phone"),
-                    resultSet.getString("address")
-                );
+                        resultSet.getString("username"),
+                        resultSet.getString("password"),
+                        resultSet.getString("full_name"),
+                        resultSet.getString("email"),
+                        resultSet.getString("phone"),
+                        resultSet.getString("address"));
                 customer.setId(resultSet.getInt("id"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
+
         return customer;
     }
+
+    // get staff
     public static List<staff> getStaff() {
         List<staff> staffs = new ArrayList<>();
         String query = "SELECT * FROM staffs";
-        
-        try (Connection conn = database.connect(); PreparedStatement ps = conn.prepareStatement(query); ResultSet rs = ps.executeQuery()) {
+
+        try (Connection conn = database.connect();
+                PreparedStatement ps = conn.prepareStatement(query);
+                ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 staff staff = new staff(
-                    rs.getString("username"),
-                    rs.getString("password"),
-                    rs.getString("full_name"),  
-                    rs.getString("email"),
-                    rs.getString("phone"),
-                    rs.getString("address")
-                );
+                        rs.getString("username"),
+                        rs.getString("password"),
+                        rs.getString("full_name"),
+                        rs.getString("email"),
+                        rs.getString("phone"),
+                        rs.getString("address"));
                 staff.setId(rs.getInt("id"));
                 staffs.add(staff);
             }
@@ -177,6 +190,8 @@ public class userdao {
         }
         return staffs;
     }
+
+    // get staff by user id
     public int getStaffIdByUserId(int userId) {
         int staffId = -1;
         String query = "SELECT id FROM staffs WHERE user_id = ?";
@@ -192,31 +207,32 @@ public class userdao {
         System.out.println("Staff ID: " + staffId);
         return staffId;
     }
+
+    // get staff by id
     public static staff getStaffById(int staffId) {
         staff staff = null;
         String query = "SELECT * FROM staffs WHERE id = ?";
-        
+
         try (Connection connection = database.connect();
-             PreparedStatement statement = connection.prepareStatement(query)) {
-             
+                PreparedStatement statement = connection.prepareStatement(query)) {
+
             statement.setInt(1, staffId);
             ResultSet resultSet = statement.executeQuery();
-            
+
             if (resultSet.next()) {
                 staff = new staff(
-                    resultSet.getString("username"),
-                    resultSet.getString("password"),
-                    resultSet.getString("full_name"),  
-                    resultSet.getString("email"),
-                    resultSet.getString("phone"),
-                    resultSet.getString("address")
-                );
+                        resultSet.getString("username"),
+                        resultSet.getString("password"),
+                        resultSet.getString("full_name"),
+                        resultSet.getString("email"),
+                        resultSet.getString("phone"),
+                        resultSet.getString("address"));
                 staff.setId(resultSet.getInt("id"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
+
         return staff;
     }
 
