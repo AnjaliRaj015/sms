@@ -108,19 +108,46 @@ public class userdao {
         return customers;
     }
 
-    // update customer
     public static void updateCustomer(customer customer) {
-        String sql = "UPDATE users SET email = ?, phone = ?, address = ? WHERE id = ?";
-        try (Connection conn = database.connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, customer.getEmail());
-            pstmt.setString(2, customer.getPhone());
-            pstmt.setString(3, customer.getAddress());
-            pstmt.setInt(4, customer.getId());
-            pstmt.executeUpdate();
+        String updateUsersSql = "UPDATE users SET email = ?, phone = ?, address = ? WHERE id = ?";
+        String updateCustomersSql = "UPDATE customers SET email = ?, phone = ?, address = ? WHERE id = ?";
+    
+        try (Connection conn = database.connect()) {
+            // Start transaction
+            conn.setAutoCommit(false);
+    
+            try (PreparedStatement pstmt1 = conn.prepareStatement(updateUsersSql);
+                 PreparedStatement pstmt2 = conn.prepareStatement(updateCustomersSql)) {
+    
+                // Update users table
+                pstmt1.setString(1, customer.getEmail());
+                pstmt1.setString(2, customer.getPhone());
+                pstmt1.setString(3, customer.getAddress());
+                pstmt1.setInt(4, customer.getId());
+                pstmt1.executeUpdate();
+    
+                // Update customers table
+                pstmt2.setString(1, customer.getEmail());
+                pstmt2.setString(2, customer.getPhone());
+                pstmt2.setString(3, customer.getAddress());
+                pstmt2.setInt(4, customer.getId());
+                pstmt2.executeUpdate();
+    
+                // Commit transaction
+                conn.commit();
+            } catch (SQLException e) {
+                // Rollback transaction on error
+                conn.rollback();
+                e.printStackTrace();
+            } finally {
+                // Restore auto-commit mode
+                conn.setAutoCommit(true);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+    
 
     // get customer by userid
     public int getCustomerIdByUserId(int userId) {
