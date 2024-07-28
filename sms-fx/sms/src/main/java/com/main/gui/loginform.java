@@ -11,7 +11,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import com.main.utils.session;
 import com.main.dao.userdao;
 import com.main.model.user;
 
@@ -137,7 +136,6 @@ public class loginform extends Application {
             userdao userDAO = new userdao();
             user user = userDAO.getUser(email, password);
             if (user != null) {
-                session.setLoggedInUser(user);
                 mainform mainForm = new mainform(user);
                 Stage newStage = new Stage();
                 mainForm.show(newStage); // Call the method to show the main form

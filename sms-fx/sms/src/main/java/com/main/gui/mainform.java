@@ -15,7 +15,6 @@ import com.main.model.user;
 import com.main.model.QuoteRequest;
 import com.main.model.appointment;
 import com.main.model.customer;
-import com.main.utils.session;
 
 import javafx.application.Application;
 import javafx.beans.property.SimpleDoubleProperty;

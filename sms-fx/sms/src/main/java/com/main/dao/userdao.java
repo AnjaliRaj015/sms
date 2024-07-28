@@ -4,7 +4,6 @@ import com.main.db.database;
 import com.main.model.customer;
 import com.main.model.staff;
 import com.main.model.user;
-import com.main.utils.session;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -29,7 +28,6 @@ public class userdao {
                 user.setPassword(rs.getString("password"));
                 user.setRole(rs.getString("role"));
                 System.out.println("User logged in with ID: " + user.getId());
-                session.setLoggedInUser(user);
                 return user;
             }
         } catch (SQLException e) {
