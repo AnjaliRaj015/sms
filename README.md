@@ -4,14 +4,12 @@ This is a Service Management System (SMS) application developed in Java using Ja
 
 ## Table of Contents
 
-- [Features](#features)
-- [Modules](#modules)
-- [Installation](#installation)
-- [Running the Application](#running-the-application)
-- [Usage](#usage)
-- [Database Schema](#database-schema)
-- [Contributing](#contributing)
-- [License](#license)
+- Features
+- Modules
+- Installation
+- Running the Application
+- Usage
+- Database Schema
 
 ## Features
 
@@ -80,11 +78,10 @@ Keeps a record of the quote requets.
 
 ### Prerequisites
 
-- Java JDK 8 or higher
-- MySQL Server
-- mysql connector
-- Maven (for managing dependencies)
-- JavaFX SDK
+- [Java JDK 8 or higher](https://youtu.be/4v6ua2_S5jI?si=ChwlvBHp0JmO53Rh](https://youtu.be/0dnVwuAHGx0?si=F1r8PH8gyECUZ0hR))
+- [MySQL Server & mysql connector](https://youtu.be/YbOLy2LtsjM?si=qbCI8suQZIBiJjwA](https://youtu.be/ZhljL_0gm04?si=zBTloWwPpiqe5Z7Q))
+- [Maven](https://youtu.be/YTvlb6eny_0?si=pbexveUBjwRicDbD)
+- [JavaFX SDK](https://youtu.be/I4J5_IWDeEo?si=lkxYnT6p-g4s6H1A)
 
 ### Steps
 
@@ -112,7 +109,7 @@ Keeps a record of the quote requets.
     ```bash
     mvn javafx:run
     ```
-## OR 
+## OR [java project setup in vscode](https://youtu.be/NYGHL8N6Kc8?si=zUVuh24rv98Uf5cQ)
 - download zip folder and extract files
 - In you vscode command palette make a new java project elect javafx project
 - type com.main
