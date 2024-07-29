@@ -93,7 +93,7 @@ Keeps a record of the quote requets.
 
 2. **Set up the database:**
     - Create a MySQL database.
-    - Run the SQL scripts located in the `resources` folder to create tables and insert initial data.
+    - Run the SQL scripts located in the `sms-fx/sms/src/resources/db` folder to create tables and insert initial data.
 
 3. **Configure the database connection:**
     - Update the database connection settings in `src/main/java/com/main/db/database.java`.
