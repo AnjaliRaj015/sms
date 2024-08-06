@@ -132,6 +132,7 @@ Keeps a record of the quote requets.
 
 ### Customer Interface
 
+- **Profile Tab**: View and edit user profile details.
 - **Services Tab**: Browse available services.
 - **Quote Requests Tab**: Request quotes for services.
 - **Appointments Tab**: View and reschedule upcoming appointments.
