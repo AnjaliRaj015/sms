@@ -36,6 +36,57 @@ public class userdao {
         return null;
     }
 
+    // update user
+    public user updateUser(int userId, String username, String password, String full_name, String email, String phone, String address) {
+        Connection connection = database.connect();
+        String query = "UPDATE users SET username= ?, password=?, full_name = ?, email = ?, phone = ?, address = ? WHERE id = ?";
+        try {
+            PreparedStatement ps = connection.prepareStatement(query);
+            // Set parameters
+            ps.setString(1, username);
+            ps.setString(2, password);
+            ps.setString(3, full_name);
+            ps.setString(4, email);
+            ps.setString(5, phone);
+            ps.setString(6, address);
+            ps.setInt(7, userId);
+            int rowsUpdated = ps.executeUpdate();
+            if (rowsUpdated > 0) {
+                System.out.println("User details updated successfully.");
+            } else {
+                System.out.println("No user found with the provided ID.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    // update user
+    public user updateCustomer(int userId, String username, String password, String full_name, String email, String phone, String address) {
+        Connection connection = database.connect();
+        String query = "UPDATE customers SET username= ?, password=?, full_name = ?, email = ?, phone = ?, address = ? WHERE id = ?";
+        try {
+            PreparedStatement ps = connection.prepareStatement(query);
+            // Set parameters
+            ps.setString(1, username);
+            ps.setString(2, password);
+            ps.setString(3, full_name);
+            ps.setString(4, email);
+            ps.setString(5, phone);
+            ps.setString(6, address);
+            ps.setInt(7, userId);
+            int rowsUpdated = ps.executeUpdate();
+            if (rowsUpdated > 0) {
+                System.out.println("User details updated successfully.");
+            } else {
+                System.out.println("No user found with the provided ID.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     // add user
     public static void addUser(user user) {
         String sql = "INSERT INTO users (full_name, username, password, role, email, phone, address) VALUES (?, ?, ?, ?, ?, ?, ?)";

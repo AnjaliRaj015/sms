@@ -53,7 +53,7 @@ public class mainform {
         primaryStage.setTitle("Service Management System");
 
         // Create buttons for the tabs
-
+        Button customerdashButton = new Button("Home");
         Button servicesButton = new Button("Services");
         Button quoteRequestsButton = new Button("Quote Requests");
         Button appointmentsButton = new Button("Appointments");
@@ -67,7 +67,7 @@ public class mainform {
         if (user.getRole().equals("customer")) {
 
             // Create a VBox for the buttons (acting as a vertical menu)
-            VBox menu = new VBox(10, servicesButton, quoteRequestsButton, appointmentsButton, pendingQuoteReqButton,
+            VBox menu = new VBox(10, customerdashButton, servicesButton, quoteRequestsButton, appointmentsButton, pendingQuoteReqButton,
                     completedQuoteReqButton);
             menu.setPadding(new Insets(10));
             menu.setMinWidth(200);
@@ -81,9 +81,10 @@ public class mainform {
             mainLayout.setCenter(contentPane);
 
             // Set the default content
-            contentPane.setCenter(createServiceTab().getContent());
+            contentPane.setCenter(createProfileTab().getContent());
 
             // Add event handlers for the buttons
+            customerdashButton.setOnAction(event->contentPane.setCenter(createProfileTab().getContent()));
             servicesButton.setOnAction(event -> contentPane.setCenter(createServiceTab().getContent()));
             quoteRequestsButton.setOnAction(event -> contentPane.setCenter(createQuoteRequestTab().getContent()));
             appointmentsButton.setOnAction(event -> contentPane.setCenter(createAppointmentsTab().getContent()));
@@ -126,7 +127,7 @@ public class mainform {
             mainLayout.setCenter(contentPane);
 
             // Set the default content
-            contentPane.setCenter(createServiceTab().getContent());
+            contentPane.setCenter(createHomeTab().getContent());
 
             // Add event handlers for the buttons
             homeButton.setOnAction(event -> contentPane.setCenter(createHomeTab().getContent()));
@@ -682,6 +683,118 @@ public class mainform {
     }
 
     // ---------------------------------------------------CUSTOMER FUNCTIONS-----------------------------------------//
+    private Tab createProfileTab() {
+        Tab profileTab = new Tab("Profile");
+        profileTab.setClosable(false);
+    
+        BorderPane profilePane = new BorderPane();
+    
+        Label headerLabel = new Label("Your Profile");
+        Label usernameLabel = new Label();
+        Label passwordLabel = new Label();
+        Label nameLabel = new Label();
+        Label emailLabel = new Label();
+        Label phoneLabel = new Label();
+        Label addressLabel = new Label();
+        Button editButton = new Button("Edit Profile");
+    
+        // Apply CSS class
+        editButton.getStyleClass().add("custom-button");
+    
+        // Load user details
+        loadUserDetails(usernameLabel, passwordLabel, nameLabel, emailLabel, phoneLabel, addressLabel);
+    
+        editButton.setOnAction(event -> {
+            openEditProfileForm();
+        });
+    
+        VBox vbox = new VBox(10);
+        vbox.setPadding(new Insets(10));
+        vbox.getChildren().addAll(headerLabel, usernameLabel, passwordLabel, nameLabel, emailLabel, phoneLabel, addressLabel, editButton);
+    
+        profilePane.setCenter(vbox);
+    
+        profileTab.setContent(profilePane);
+        return profileTab;
+    }
+    
+    private void loadUserDetails(Label usernameLabel, Label passwordLabel, Label nameLabel, Label emailLabel, Label phoneLabel, Label addressLabel) {
+        // Fetch user details from the database
+        userdao userDAO = new userdao();
+        int customerId = userDAO.getCustomerIdByUserId(user.getId());
+        user currentUser = userDAO.getCustomerById(customerId);
+    
+        usernameLabel.setText("Username: " + currentUser.getUsername());
+        passwordLabel.setText("Password: " + currentUser.getPassword());
+        nameLabel.setText("Name: " + currentUser.getName());
+        emailLabel.setText("Email: " + currentUser.getEmail());
+        phoneLabel.setText("Phone: " + currentUser.getPhone());
+        addressLabel.setText("Address: " + currentUser.getAddress());
+    }
+    private void openEditProfileForm() {
+        Stage editProfileStage = new Stage();
+        editProfileStage.setTitle("Edit Profile");
+    
+        VBox editForm = new VBox(10);
+        editForm.setPadding(new Insets(10));
+        editForm.setStyle("-fx-background-color: #d1d1e9;"); // Background color
+    
+        TextField usernameField = new TextField();
+        TextField passwordField = new TextField();
+        TextField nameField = new TextField();
+        TextField emailField = new TextField();
+        TextField phoneField = new TextField();
+        TextField addressField = new TextField();
+        Button saveButton = new Button("Save");
+    
+        // Set button style
+        saveButton.setStyle("-fx-background-color: #4749c4; -fx-text-fill: white; -fx-font-size: 16px;");
+    
+        // Load current user details into fields
+        userdao userDAO = new userdao();
+        int customerId = userDAO.getCustomerIdByUserId(user.getId());
+        user currentUser = userDAO.getCustomerById(customerId);
+    
+        usernameField.setText(currentUser.getUsername());
+        passwordField.setText(currentUser.getPassword());
+        nameField.setText(currentUser.getName());
+        emailField.setText(currentUser.getEmail());
+        phoneField.setText(currentUser.getPhone());
+        addressField.setText(currentUser.getAddress());
+    
+        saveButton.setOnAction(event -> {
+            // Update user details
+            String username = usernameField.getText();
+            String password = passwordField.getText();
+            String name = nameField.getText();
+            String email = emailField.getText();
+            String phone = phoneField.getText();
+            String address = addressField.getText();
+    
+            userDAO.updateUser(user.getId(), username, password, name, email, phone, address);
+            userDAO.updateCustomer(customerId, username, password, name, email, phone, address);
+            editProfileStage.close();
+            // Refresh profile tab after saving
+        });
+    
+        editForm.getChildren().addAll(
+            new Label("Username:"), usernameField,
+            new Label("Password:"), passwordField,
+            new Label("Name:"), nameField,
+            new Label("Email:"), emailField,
+            new Label("Phone:"), phoneField,
+            new Label("Address:"), addressField,
+            saveButton
+        );
+    
+        Scene scene = new Scene(editForm, 400, 500);
+        editProfileStage.setScene(scene);
+        editProfileStage.show();
+    }
+    
+    
+
+        
 
     // BROWSE SERVICES-CUSTOMER TAB
     private Tab createServiceTab() {
